@@ -1,0 +1,24 @@
+import serial
+import time
+
+# Set up serial communication with GSM module
+ser = serial.Serial('/dev/ttyS0', 9600, timeout=1)  # Adjust to correct port
+
+def send_sms(phone_number, message):
+    ser.write(b'AT+CMGF=1\r')  # Set SMS to text mode
+    time.sleep(1)
+    ser.write(b'AT+CMGS="' + phone_number.encode() + b'"\r')
+    time.sleep(1)
+    ser.write(message.encode() + b'\r')
+    time.sleep(1)
+    ser.write(bytes([26]))  # CTRL+Z to send SMS
+    time.sleep(3)
+    print("SMS Sent.")
+
+def read_sms():
+    ser.write(b'AT+CMGF=1\r')  # Set SMS to text mode
+    time.sleep(1)
+    ser.write(b'AT+CMGL="ALL"\r')  # Read all SMS
+    time.sleep(3)
+    response = ser.read(ser.inWaiting()).decode('utf-8')
+    print("Received SMS:\n", response)

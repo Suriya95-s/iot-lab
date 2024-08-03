@@ -1,0 +1,15 @@
+import serial
+
+# Open serial port (adjust the port name as needed, e.g., /dev/ttyUSB0 or /dev/ttyS0)
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+
+print("Raspberry Pi XBee Communication Initialized.")
+
+while True:
+    if ser.in_waiting > 0:
+        received_data = ser.read(ser.in_waiting).decode('utf-8')
+        print(f"Received from XBee: {received_data}")
+
+    user_input = input("Enter a character to send to Arduino: ")
+    if user_input:
+        ser.write(user_input.encode('utf-8'))

@@ -1,0 +1,34 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial gsm(2, 3); // RX, TX pins for GSM module
+
+void setup() {
+  Serial.begin(9600);    // Initialize serial communication with PC
+  gsm.begin(9600);       // Initialize serial communication with GSM module
+  delay(1000);
+
+  Serial.println("Initializing GSM...");
+  gsm.println("AT");        // Test the GSM module connection
+  delay(1000);
+  gsm.println("AT+CMGF=1");  // Set SMS text mode
+  delay(1000);
+  Serial.println("GSM Initialized.");
+}
+
+void loop() {
+  if (Serial.available()) {
+    String dataToSend = Serial.readString();
+    gsm.println("AT+CMGS=\"+1234567890\"");  // Replace with recipient's phone number
+    delay(1000);
+    gsm.println(dataToSend);    // Send SMS content
+    delay(1000);
+    gsm.write(26);              // Send CTRL+Z to end the SMS
+    Serial.println("SMS Sent.");
+  }
+
+  if (gsm.available()) {
+    String incomingData = gsm.readString();
+    Serial.print("Received: ");
+    Serial.println(incomingData);  // Print received data to Serial Monitor
+  }
+}
