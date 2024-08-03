@@ -1,13 +1,16 @@
-
 void setup() {
+  // Initialize serial communication at 9600 baud rate
   Serial.begin(9600);
 }
 
 void loop() {
-  if (Serial.available()) {
-    String data = Serial.readString();
-    Serial.println("Received from Python: " + data);
-    Serial.println("Hello, Python!");
+  // Check if there is incoming serial data
+  if (Serial.available() > 0) {
+    // Read the incoming data as a string until a newline character
+    String receivedData = Serial.readStringUntil('\n');
+    
+    // Print the received data with a prefix
+    Serial.print("Received: ");
+    Serial.println(receivedData);
   }
 }
-
